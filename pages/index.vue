@@ -4,7 +4,7 @@
 <div class="m-auto w-full px-5 md:w-1/3">
 <div class="pl-1 text-white font-medium text-2xl trackingwide
 text-center">
-Inventory System {{ email }}
+Inventory System
 </div>
 <form>
 <inputElement
