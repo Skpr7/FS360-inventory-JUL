@@ -1,9 +1,9 @@
 
 <template>
-<div class="flex h-screen w-full bg-gray-700">
-<div class="m-auto w-full px-5 md:w-1/3">
-<div class="pl-1 text-white font-medium text-2xl trackingwide
-text-center">
+  <div class="flex h-screen w-full bg-gray-700">
+  <div class="m-auto w-full px-5 md:w-1/3">
+  <div class="pl-1 text-white font-medium text-2xl trackingwide
+  text-center">
 Inventory System
 </div>
 <form>
@@ -45,12 +45,21 @@ focus:outline-none
 </template>
 
 <script>
-import Logo from '~/components/items/Logo.vue'
-import InputElement from "~/components/items/Input.vue";
-export default {
-components: {
-Logo,
-InputElement
+  import Logo from '~/components/items/Logo.vue'
+  import InputElement from "~/components/items/Input.vue";
+  export default {
+
+  transition:{
+    name:"inventory",
+    mode:"out-in",
+    duration: { enter: 1000, leave: 500 },
+    enterActiveClass: "animated fadeIn",
+    leaveActiveClass: "animated fadeOut"
+  },
+
+    components: {
+    Logo,
+    InputElement
 },
 data: function(){
 return{
