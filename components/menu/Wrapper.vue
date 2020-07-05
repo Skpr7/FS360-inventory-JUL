@@ -1,16 +1,17 @@
 <template>
-    <div class="
-        flex
-        flex-col
-        w-56
-        transition-all
-        duration-500
-        ease-in-out
-        bg-gray-800
-        h-screen
-        shadow-2xl
-        pt-16
-        ">
+    <div :class="{
+        'flex':true,
+        'flex-col':true,
+        'w-56':showMenu,
+        'w-16':!showMenu,
+        'transition-all':true,
+        'duration-500':true,
+        'ease-in-out':true,
+        'bg-gray-800':true,
+        'h-screen':true,
+        'shadow-2xl':true,
+        'pt-16':true,
+        }">
         <menuLink
             :url="'/dashboard'"
             :class="{
@@ -33,7 +34,7 @@
                 'cursor-pointer':true
         }">
             <template v-slot:icon-word>
-                <div class="flex items-center justify-start overflowx-hidden hover:text-white">
+                <div class="flex items-center justify-start overflow-hidden hover:text-white">
                     <i class="fas fa-truck-loading ml-6 mr-4"></i>
                     <label class="flex-shrink-0 ml-2 text-sm font-sans tracking-wide cursor-pointer">Products</label>
                 </div>
@@ -65,11 +66,17 @@
 <script>
     import MenuLink from "~/components/items/MenuLink.vue";
     import MenuLinkList from "~/components/items/MenuLinkList.vue";
+    import { mapState } from 'vuex'
 
     export default {
         components:{
             MenuLink,
             MenuLinkList
+        },
+        computed:{
+            ...mapState({
+                showMenu: state => state.dashboard.showMenu
+            })
         }
     }
 </script>   

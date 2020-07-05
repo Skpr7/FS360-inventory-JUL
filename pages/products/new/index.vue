@@ -75,12 +75,12 @@
                     <form class="flex grid grid-cols-1 md:grid-cols-4">
                         <div class="my-2 mx-2 relative md:col-span-2">
                             <inputElement
-                            :labelName="'Bean Name'"
-                            :labelId="'beanName'"
-                            :inputType="'text'"
-                            :model="bean"
-                            @input="bean = $event"
-                            :disabled="false"
+                                :labelName="'Bean Name'"
+                                :labelId="'beanName'"
+                                :inputType="'text'"
+                                :model="bean"
+                                @input="setBean($event)"
+                                :disabled="false"
                             />
                             <i class="fas fa-globe-asia absolute top-0 text-gray-500 right-0 p-3"></i>
                         </div>
@@ -89,7 +89,7 @@
                                 <selectElement
                                 :labelName="'ROAST LEVEL'"
                                 :model="roastLevel"
-                                @select="roastLevel = $event">
+                                @select="setRoastLevel($event)">
                                     <template v-slot:select-options>
                                         <option
                                         v-for="roast in roastLevelList" :key="roast"
@@ -106,7 +106,7 @@
                                 :labelId="'weightPerPack'"
                                 :inputType="'text'"
                                 :model="weightPerPack"
-                                @input="weightPerPack = $event"
+                                @input="setWeightPerPack($event)"
                                 :disabled="false"
                                 />
                                 <i class="fas fa-globe-asia absolute top-0 text-gray-500 right-0 p-3"></i>
@@ -117,7 +117,7 @@
                                 :labelId="'weightBeforeRoast'"
                                 :inputType="'text'"
                                 :model="weightBeforeRoast"
-                                @input="weightBeforeRoast = $event"
+                                @input="setWeightBeforeRoast($event)"
                                 :disabled="false"
                                 />
                                 <i class="fas fa-globe-asia absolute top-0 text-gray-500 right-0 p-3"></i>
@@ -128,7 +128,7 @@
                                 :labelId="'weightAfterRoast'"
                                 :inputType="'text'"
                                 :model="weightAfterRoast"
-                                @input="weightAfterRoast = $event"
+                                @input="setWeightAfterRoast($event)"
                                 :disabled="false"
                                 />
                                 <i class="fas fa-globe-asia absolute top-0 text-gray-500 right-0 p-3"></i>
@@ -139,7 +139,7 @@
                                 :labelId="'profile'"
                                 :inputType="'text'"
                                 :model="profile"
-                                @input="profile = $event"
+                                @input="setProfile($event)"
                                 :disabled="false"
                                 />
                                 <i class="fas fa-globe-asia absolute top-0 text-gray-500 right-0
@@ -178,6 +178,7 @@
     import ContentCard from "~/components/items/ContentCard.vue";
     import InputElement from "~/components/items/Input.vue";
     import SelectElement from "~/components/items/Select.vue";
+    import { mapState, mapMutations } from 'vuex';
     
     export default {
         layout:"dashboard",
@@ -186,51 +187,59 @@
             InputElement,
             SelectElement
         },
-        data (){
-            return {
-            bean:'',
-            roastLevel:'',
-            roastLevelList: ['Light Roast', 'Medium Roast', 'Dark Roast'],
-            weightPerPack:'',
-            weightBeforeRoast:'',
-            weightAfterRoast:'',
-            profile:'',
-            selectedStock: {
-                price: 500,
-                purchasedStock: 15
+        computed:{
+        ...mapState({
+            bean: state => state.product.bean,
+            roastLevel: state => state.product.roastLevel,
+            roastLevelList: state => state.product.roastLevelList,
+            weightPerPack: state => state.product.weightPerPack,
+            weightBeforeRoast: state => state.product.weightBeforeRoast,
+            weightAfterRoast: state => state.product.weightAfterRoast,
+            profile: state => state.product.profile,
+            selectedStock: state => state.product.selectedStock
+            })
+        },
+        filters:{
+            prettyAmount (amount) {
+                return parseFloat(amount).toFixed(2)
             }
+        },
+        methods: {
+            ...mapMutations({
+                resetStore: 'product/resetStore',
+                setBean: 'product/setBean',
+                setRoastLevel: 'product/setRoastLevel',
+                setWeightPerPack: 'product/setWeightPerPack',
+                setWeightBeforeRoast: 'product/setWeightBeforeRoast',
+                setWeightAfterRoast: 'product/setWeightAfterRoast',
+                setProfile: 'product/setProfile',
+            }),
+            waterLose () {
+                let wL = this.weightAfterRoast && this.weightBeforeRoast ?
+                                (1-(this.weightAfterRoast/this.weightBeforeRoast))*100 : 0.0
+                return wL
+            },
+            stockPerKg () {
+                let spKG = Object.keys(this.selectedStock).length > 0 ?
+                                this.selectedStock.price/this.selectedStock.purchasedStock : 0.0
+                return spKG
+            },
+            roastedBeanPerKG () {
+                let rBKG = Object.keys(this.selectedStock).length > 0 && this.weightAfterRoast?
+                                (this.weightBeforeRoast/this.weightAfterRoast) * (this.selectedStock.price/this.selectedStock.purchasedStock) : 0.0
+                return rBKG
+            },
+            roastedBeanPerPack () {
+                let rbPP = Object.keys(this.selectedStock).length > 0 && this.weightAfterRoast && this.weightPerPack ? ((this.weightBeforeRoast/this.weightAfterRoast) * (this.selectedStock.price/this.selectedStock.purchasedStock))/this.calculatePack() : 0.0
+                return rbPP
+            },
+            calculatePack: function(){
+                let packs = parseInt(this.weightAfterRoast/(this.weightPerPack/1000))
+                return packs
+            }
+        },
+        beforeDestroy(){
+            this.resetStore();
         }
-
-    },
-    filters:{
-        prettyAmount (amount) {
-            return parseFloat(amount).toFixed(2)
-        }
-    },
-    methods: {
-        waterLose () {
-            let wL = this.weightAfterRoast && this.weightBeforeRoast ?
-                            (1-(this.weightAfterRoast/this.weightBeforeRoast))*100 : 0.0
-            return wL
-        },
-        stockPerKg () {
-            let spKG = Object.keys(this.selectedStock).length > 0 ?
-                            this.selectedStock.price/this.selectedStock.purchasedStock : 0.0
-            return spKG
-        },
-        roastedBeanPerKG () {
-            let rBKG = Object.keys(this.selectedStock).length > 0 && this.weightAfterRoast?
-                            (this.weightBeforeRoast/this.weightAfterRoast) * (this.selectedStock.price/this.selectedStock.purchasedStock) : 0.0
-            return rBKG
-        },
-        roastedBeanPerPack () {
-            let rbPP = Object.keys(this.selectedStock).length > 0 && this.weightAfterRoast && this.weightPerPack ? ((this.weightBeforeRoast/this.weightAfterRoast) * (this.selectedStock.price/this.selectedStock.purchasedStock))/this.calculatePack() : 0.0
-            return rbPP
-        },
-        calculatePack: function(){
-            let packs = parseInt(this.weightAfterRoast/(this.weightPerPack/1000))
-            return packs
-        }
-    }
 }
 </script>
