@@ -44,46 +44,15 @@ export default {
     data(){
         return {
             revenueMonthly: {
-                barChartData: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May','June','July','August'],
-                datasets: [
-                    {
-                        label: 'Income',
-                        backgroundColor: [
-                        chartColors.green,
-                        chartColors.green,
-                        chartColors.green,
-                        chartColors.green,
-                        chartColors.green,
-                        chartColors.red,
-                        chartColors.blue,
-                        chartColors.yellow],
-                        data: [5, 3, 4, 6, 4,9,3,2]
-                    }
-                ],
-            },
-            barChartOptions: {
-                responsive: true,
-                legend: {
-                    display: false,
-            },
-                title: {
-                    display: true,
-                    text: 'Monthly Income'
-            },
-            scales: {
-                yAxes: [
-                        {
-                            ticks: {
-                            beginAtZero: true,
-                            suggestedMax: 10
-                            }
-                        }
-                    ]
-                }
+                barChartData: {},
+            barChartOptions: {},
                 },
                 }
-            }
         },
+    async mounted(){
+        console.log(this.$apis)
+        // await this.$apis.dashboard.revenue()
+        //     .then(res => {this.revenueMonthly = res})
     }
+}
     </script>

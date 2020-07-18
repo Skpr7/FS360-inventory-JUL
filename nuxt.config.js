@@ -43,6 +43,7 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    { src:'~/plugins/apiFactory.js'},
   ],
   /*
   ** Auto import components
@@ -67,7 +68,9 @@ export default {
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {},
+ axios: {
+  baseURL: process.env.BASE_URL || 'http://localhost:4000'
+  },
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
