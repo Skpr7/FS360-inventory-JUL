@@ -39,7 +39,7 @@ hover:bg-blue-700
 hover:text-gray-400
 active:outline-none
 focus:outline-none
-"> SIGN IN </button></form>
+" @click="login"> SIGN IN </button></form>
 </div>
 </div>
 </template>
@@ -47,6 +47,7 @@ focus:outline-none
 <script>
   import Logo from '~/components/items/Logo.vue'
   import InputElement from "~/components/items/Input.vue";
+  import { mapState, mapActions } from "vuex";
   export default {
 
   transition:{
@@ -62,10 +63,28 @@ focus:outline-none
     InputElement
 },
 data: function(){
-return{
-email: "",
-password: ""
-}
-}
+  return{
+  email: "",
+  password: ""
+  }
+  },
+  computed:{
+    ...mapState({
+    user : state => state.auth.user
+    })
+  },
+  methods:{
+    login: function(){
+  this.googleLogin({ email:this.email, password:this.password})
+  },
+  ...mapActions({
+  googleLogin: "auth/firebaseLogin"
+  })
+  },
+  mounted(){
+  if(this.isLoggedIn){
+  this.$router.push("/dashboard")
+  }
+  }
 }
 </script>

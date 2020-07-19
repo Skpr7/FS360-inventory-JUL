@@ -164,6 +164,7 @@
                                 w-full
                                 "
                                 type="button"
+                                @click="createProduct(user)"
                                 >
                                 New Product
                                 </button>
@@ -178,7 +179,7 @@
     import ContentCard from "~/components/items/ContentCard.vue";
     import InputElement from "~/components/items/Input.vue";
     import SelectElement from "~/components/items/Select.vue";
-    import { mapState, mapMutations } from 'vuex';
+    import { mapState, mapMutations, mapActions } from 'vuex';
     
     export default {
         layout:"dashboard",
@@ -189,6 +190,7 @@
         },
         computed:{
         ...mapState({
+            user : state => state.auth.user,
             bean: state => state.product.bean,
             roastLevel: state => state.product.roastLevel,
             roastLevelList: state => state.product.roastLevelList,
@@ -213,6 +215,10 @@
                 setWeightBeforeRoast: 'product/setWeightBeforeRoast',
                 setWeightAfterRoast: 'product/setWeightAfterRoast',
                 setProfile: 'product/setProfile',
+            }),
+
+            ...mapActions({
+                createProduct: 'product/createProduct'
             }),
             waterLose () {
                 let wL = this.weightAfterRoast && this.weightBeforeRoast ?

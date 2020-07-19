@@ -16,6 +16,7 @@ px-5 overflow-y-auto" />
 
     export default {
         name:"dashboard",
+        middleware: 'authentication',
         components:{
             NaviWrapper,
             MenuWrapper

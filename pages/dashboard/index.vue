@@ -15,6 +15,7 @@
 <script>
 import ContentCard from "~/components/items/ContentCard.vue";
 import BarChart from '~/components/charts/BarChart';
+import { mapState, mapActions } from 'vuex'
 import LineChart from '~/components/charts/LineChart';
 const chartColors = {
     red: 'rgb(255, 99, 132)',
@@ -41,6 +42,17 @@ export default {
         BarChart,
         LineChart
     },
+
+    computed:{
+        ...mapState({
+        user : state => state.auth.user
+        })
+    },
+    methods:{
+    ...mapActions({
+    userLogin : "auth/userLogin",
+        })
+    },
     data(){
         return {
             revenueMonthly: {
@@ -50,9 +62,9 @@ export default {
                 }
         },
     async mounted(){
-        console.log(this.$apis)
-        // await this.$apis.dashboard.revenue()
-        //     .then(res => {this.revenueMonthly = res})
+        await this.userLogin();
+        await this.$apis.dashboard.revenue(this.user.uid, this.user.idToken)
+            .then(res => {this.revenueMonthly = res})
     }
 }
     </script>
